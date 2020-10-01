@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -15,6 +15,18 @@ def convert(decimal_num):
 @app.route('/', methods=['GET'])
 def main_get():
     return render_template('index.html', not_valid=False, developer_name='Fatih')
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
 
+
+@app.route('/', methods=['POST'])
+def main_post():
+    alphanumeric = request.form['number']
+    if not alphanumeric.isdecimal():
+        return render_template('index.html', not_valid=True, developer_name='Fatih')
+    number=int(alphanumeric)
+    if not (0 < number < 4000):
+        return render_template('index.html', not_valid=True, developer_name='Fatih')
+    return render_template('result.html', number_decimal=number, number_roman=convert(number), developer_name='Fatih' )
+    
+
+if __name__ == '__main__':
+    app.run(host='localhost', port=5000, debug=True)
